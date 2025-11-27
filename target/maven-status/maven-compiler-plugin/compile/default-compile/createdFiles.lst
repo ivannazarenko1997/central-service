@@ -1,12 +1,11 @@
 com\mycompany\demo\warehouse\config\TraceIdFilter.class
-com\mycompany\demo\warehouse\process\UdpListenerComponent.class
 com\mycompany\demo\warehouse\web\ApiError.class
 com\mycompany\demo\warehouse\dto\AlarmResponseDto.class
+com\mycompany\demo\warehouse\exception\CentralServiceException.class
 com\mycompany\demo\warehouse\model\SensorMeasurementEvent$SensorMeasurementEventBuilder.class
 com\mycompany\demo\warehouse\config\OpenApiConfig.class
 com\mycompany\demo\warehouse\config\PasswordConfig.class
 com\mycompany\demo\warehouse\config\UdpListenerProperties$ListenerConfig.class
-com\mycompany\demo\warehouse\exception\WarehouseServiceException.class
 com\mycompany\demo\warehouse\kafka\event\SensorMeasurementDto$SensorMeasurementDtoBuilder.class
 com\mycompany\demo\warehouse\service\impl\SensorServiceImpl.class
 com\mycompany\demo\warehouse\service\LoggerServise.class
@@ -30,7 +29,6 @@ com\mycompany\demo\warehouse\config\SecurityConfig.class
 com\mycompany\demo\warehouse\kafka\consumer\MeasurementConsumer.class
 com\mycompany\demo\warehouse\TestPostgresConnection.class
 com\mycompany\demo\warehouse\model\SensorMeasurementEvent.class
-com\mycompany\demo\warehouse\kafka\producer\MeasurementProducer.class
 com\mycompany\demo\warehouse\service\SensorService.class
 com\mycompany\demo\warehouse\dto\AlarmResponseDto$AlarmResponseDtoBuilder.class
 com\mycompany\demo\warehouse\web\ApiExceptionHandler.class

@@ -3,7 +3,7 @@ package com.mycompany.demo.warehouse.service.impl;
 
 import com.mycompany.demo.warehouse.domain.Sensor;
 import com.mycompany.demo.warehouse.dto.AlarmResponseDto;
-import com.mycompany.demo.warehouse.exception.WarehouseServiceException;
+import com.mycompany.demo.warehouse.exception.CentralServiceException;
 import com.mycompany.demo.warehouse.mapper.AlarmResponseMapper;
 import com.mycompany.demo.warehouse.repository.SensorRepository;
 import com.mycompany.demo.warehouse.service.SensorService;
@@ -39,7 +39,7 @@ public class SensorServiceImpl implements SensorService {
             }
         } catch (Exception e) {
             log.error("Cannot execute getAlarms", e);
-            throw new WarehouseServiceException("Cannot execute getAlarms", e);
+            throw new CentralServiceException("Cannot execute getAlarms", e);
         }
     }
 

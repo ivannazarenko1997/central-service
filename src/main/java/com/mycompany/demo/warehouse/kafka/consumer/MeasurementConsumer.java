@@ -4,7 +4,7 @@ package com.mycompany.demo.warehouse.kafka.consumer;
 
 import com.mycompany.demo.warehouse.domain.Sensor;
 import com.mycompany.demo.warehouse.enums.SensorType;
-import com.mycompany.demo.warehouse.exception.WarehouseServiceException;
+import com.mycompany.demo.warehouse.exception.CentralServiceException;
 import com.mycompany.demo.warehouse.kafka.event.SensorMeasurementDto;
 import com.mycompany.demo.warehouse.mapper.EventListenerMapper;
 
@@ -34,7 +34,7 @@ public class MeasurementConsumer {
         final String type  = safeLower(event.getType().name() );
         if (isEmpty(type) ) {
             log.error("Income event type is empty for event:{}",event);
-            throw new WarehouseServiceException("Income event type is empty for event");
+            throw new CentralServiceException("Income event type is empty for event");
         }
         switch (type) {
             case "temperature","humidity" -> handleSensor(event);

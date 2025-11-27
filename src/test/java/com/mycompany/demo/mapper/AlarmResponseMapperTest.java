@@ -11,9 +11,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class AlarmResponseMapperTest {
 
-    // --------------------------
-    // 1) NORMAL MAPPING
-    // --------------------------
     @Test
     void fromEntity_shouldMapAllFieldsCorrectly() {
         Sensor sensor = new Sensor();
@@ -39,18 +36,13 @@ class AlarmResponseMapperTest {
         assertThat(dto.getCreatedAt()).isEqualTo(created);
     }
 
-    // --------------------------
-    // 2) NULL ENTITY
-    // --------------------------
+
     @Test
     void fromEntity_nullInput_shouldReturnNull() {
         AlarmResponseDto dto = AlarmResponseMapper.fromEntity(null);
         assertThat(dto).isNull();
     }
 
-    // --------------------------
-    // 3) ALARM = FALSE
-    // --------------------------
     @Test
     void fromEntity_alarmFalse_shouldMapCorrectly() {
         Sensor sensor = new Sensor();
@@ -71,9 +63,6 @@ class AlarmResponseMapperTest {
         assertThat(dto.getMessage()).isEqualTo("Normal humidity");
     }
 
-    // --------------------------
-    // 4) NO DESCRIPTION & NO SENSOR TYPE
-    // --------------------------
     @Test
     void fromEntity_missingOptionalFields_shouldMapNullsCorrectly() {
         Sensor sensor = new Sensor();
@@ -95,9 +84,7 @@ class AlarmResponseMapperTest {
         assertThat(dto.getThreshold()).isEqualTo(12.5);
     }
 
-    // --------------------------
-    // 5) BOUNDARY VALUES (NEGATIVE, ZERO, VERY LARGE)
-    // --------------------------
+
     @Test
     void fromEntity_boundaryValues_shouldMapCorrectly() {
         Sensor sensor = new Sensor();
