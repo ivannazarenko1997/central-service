@@ -1,66 +1,119 @@
-1. Overview
+README — Central Monitoring Service
+🛡️ Central Monitoring Service
 
-This application is a small reactive monitoring platform for warehouses equipped with environmental sensors. Each warehouse contains sensors that periodically send measurements (temperature and humidity) via UDP.
+Alarm Evaluator → Sensor Threshold Monitor
 
-The solution consists of two logical services:
+The Central Monitoring Service consumes sensor measurement events from the message broker (Kafka) and evaluates whether measurements from any warehouse exceed configured thresholds. When an alarm is detected, the service logs a warning and persists the alarm.
 
-Warehouse Service – receives raw UDP datagrams from sensors, validates and normalizes the data, and forwards structured events to a central system (optionally via a message broker).
+🔧 Features
 
-Central Monitoring Service – aggregates measurements from one or more warehouses, applies configured thresholds for temperature and humidity, and raises alarms when limits are exceeded. Alarms are visible in the logs/console and can be further integrated with external monitoring tools.
+Consumes events from Kafka
 
-The system is designed to be reactive, non-blocking, and easily extensible for additional sensor types or alert channels.
+Evaluates thresholds:
 
-2. Functional Requirements Mapping
-   2.1 Sensor Types and Protocol
+Temperature > 35°C
 
-The system currently supports two sensor types:
+Humidity > 50%
 
-Temperature
+Logs alarm events in console
 
-UDP Port: 3344
+Persists alarm results to DB
 
-Message format: sensor_id=t1; value=30
+Exposes REST endpoint to list alarms:
 
-Threshold: 35°C
-
-Humidity
-
-UDP Port: 3355
-
-Message format: sensor_id=h1; value=40
-
-Threshold: 50%
-
-Each sensor sends UDP packets in the form:
-
-sensor_id=<ID>; value=<numeric_value>
+GET /v1/api/alarms
 
 
-The Warehouse Service parses these datagrams, extracts sensor_id and value, and also derives the sensor type based on the port or configuration.
+Pagination support
 
-2.2 Threshold Monitoring & Alarms
+Optional filtering by sensorType
 
-The Central Monitoring Service maintains configurable thresholds for:
+🗂️ Project Structure
+central-service/
+ ├── kafka/            # Kafka consumer
+ ├── domain/           # Alarm entity
+ ├── dto/              # Alarm response DTO
+ ├── mapper/           # Entity <→ DTO mapping
+ ├── controller/       # REST endpoint
+ ├── repository/       # JPA repository
+ ├── service/          # Alarm business logic
+ ├── config/           # Security, Kafka, DB
+ └── test/             # Unit tests
 
-TEMPERATURE_MAX = 35°C
+⚙️ Alarm Logic
 
-HUMIDITY_MAX = 50%
+Example output:
 
-For each incoming measurement:
+🚨 ALARM ACTIVATED! TEMPERATURE reading exceeded threshold: t1 -> 38°C > 35°C
 
-If the value is within the allowed range → status is logged as OK.
 
-If the value exceeds the configured threshold → an ALARM is raised.
+If below threshold:
 
- 
-Possible urls:
-GET http://localhost:8080/v1/api/alarms?sensorType=TEMPERATURE
-GET http://localhost:8080/v1/api/alarms?sensorType=HUMIDITY
-GET http://localhost:8080/v1/api/alarms?page=0&size=20
-GET http://localhost:8080/v1/api/alarms?page=1&size=20
-GET http://localhost:8080/v1/api/alarms?page=2&size=50
-GET http://localhost:8080/v1/api/alarms?page=0&size=100
-GET http://localhost:8080/v1/api/alarms?sort=id,asc
-GET http://localhost:8080/v1/api/alarms?sort=id,desc
-GET http://localhost:8080/v1/api/alarms?sensorType=TEMPERATURE&page=0&size=20&sort=createdAt,desc
-GET http://localhost:8080/v1/api/alarms?sensorType=HUMIDITY&page=1&size=50&sort=createdAt,asc
+STATUS OK: HUMIDITY reading is within limits.
+
+📡 Kafka Input Format
+
+Events expected:
+
+{
+  "sensorId": "t1",
+  "type": "TEMPERATURE",
+  "value": 38.0
+}
+
+🌐 REST API
+Get alarms
+GET /v1/api/alarms?page=0&size=20&sensorType=temperature
+
+Response example:
+{
+  "content": [
+    {
+      "id": 1,
+      "sensorId": "t1",
+      "sensorType": "temperature",
+      "value": 38.0,
+      "threshold": 35.0,
+      "message": "Exceeded temperature limit",
+      "createdAt": "2025-11-27T12:00:12Z"
+    }
+  ]
+}
+
+
+All endpoints under /v1/api/alarms are public.
+
+🛠️ How to Run
+1. Start dependencies:
+docker compose up -d
+
+2. Start service:
+./mvnw spring-boot:run
+
+🧪 Tests
+./mvnw test
+
+
+Includes tests for:
+
+Kafka listener
+
+Alarm evaluation logic
+
+Controller pagination & filtering
+
+Mapper logic
+
+🔥 Responsibilities
+
+The Central Monitoring Service:
+
+Receives events from warehouses
+
+Evaluates configured thresholds
+
+Logs alarms to console
+
+Stores alarms in database
+
+Exposes REST API for alarm listing
